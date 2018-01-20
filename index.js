@@ -11,6 +11,8 @@ var groupIds = {
 	'forwardnews': []
 }
 
+var ownerId = parseInt(process.env.TELEGRAM_OWNER_ID) // Owner's id who can do the commands
+
 
 // Create a bot that uses 'polling' to fetch new updates
 const newsBot = new TelegramBot(process.env.TELEGRAM_NEWS_TOKEN, {polling: true});
@@ -35,41 +37,71 @@ client.get('forwardnews', (err,c) => { groupIds['forwardnews'] = parseIfExists(c
 
 // Receivers
 alertBot.onText(/\!enablealerts/, (msg, match) => {
-	console.log("HERE")
-  addRedisId('alerts', msg.chat.id)
-  alertBot.sendMessage(msg.chat.id, 'Done.')
+  if (msg.from.id == ownerId) {
+  	addRedisId('alerts', msg.chat.id)
+  	alertBot.sendMessage(msg.chat.id, 'Done.')
+  }
 });
 newsBot.onText(/\!enablenews/, (msg, match) => {
-  addRedisId('news', msg.chat.id)
-  newsBot.sendMessage(msg.chat.id, 'Done.')
+  if (msg.from.id == ownerId) {
+  	addRedisId('news', msg.chat.id)
+  	newsBot.sendMessage(msg.chat.id, 'Done.')
+  }
 });
 alertBot.onText(/\!disablealerts/, (msg, match) => {
-  removeRedisId('alerts', msg.chat.id)
-  alertBot.sendMessage(msg.chat.id, 'Done.')
+  if (msg.from.id == ownerId) {
+  	removeRedisId('alerts', msg.chat.id)
+  	alertBot.sendMessage(msg.chat.id, 'Done.')
+  }
 });
 newsBot.onText(/\!disablenews/, (msg, match) => {
-  removeRedisId('news', msg.chat.id)
-  newsBot.sendMessage(msg.chat.id, 'Done.')
+  if (msg.from.id == ownerId) {
+  	removeRedisId('news', msg.chat.id)
+  	newsBot.sendMessage(msg.chat.id, 'Done.')
+  }
 });
 
 // Forwarders
 alertBot.onText(/\!forwardalerts/, (msg, match) => {
-  addRedisId('forwardalerts', msg.chat.id)
-  alertBot.sendMessage(msg.chat.id, 'Done.')
+  if (msg.from.id == ownerId) {
+  	addRedisId('forwardalerts', msg.chat.id)
+  	alertBot.sendMessage(msg.chat.id, 'Done.')
+  }
 });
 newsBot.onText(/\!forwardnews/, (msg, match) => {
-  addRedisId('forwardnews', msg.chat.id)
-  newsBot.sendMessage(msg.chat.id, 'Done.')
+  if (msg.from.id == ownerId) {
+  	addRedisId('forwardnews', msg.chat.id)
+  	newsBot.sendMessage(msg.chat.id, 'Done.')
+  }
 });
 alertBot.onText(/\!noforwardalerts/, (msg, match) => {
-  removeRedisId('forwardalerts', msg.chat.id)
-  alertBot.sendMessage(msg.chat.id, 'Done.')
+  if (msg.from.id == ownerId) {
+  	removeRedisId('forwardalerts', msg.chat.id)
+  	alertBot.sendMessage(msg.chat.id, 'Done.')
+  }
 });
 newsBot.onText(/\!noforwardnews/, (msg, match) => {
-  removeRedisId('forwardnews', msg.chat.id)
-  newsBot.sendMessage(msg.chat.id, 'Done.')
+  if (msg.from.id == ownerId) {
+  	removeRedisId('forwardnews', msg.chat.id)
+  	newsBot.sendMessage(msg.chat.id, 'Done.')
+  }
 });
+// Others
+alertBot.onText(/\!help/, (msg, match) => {
+  if (msg.from.id == ownerId) {
+  	message = "Commands:\n"
+  	message += "!enablealerts: enable a channel to receive alerts\n"
+	message += "!enablenews: enable a channel to receive news\n"
+	message += "!disablealerts: channel wont receive alerts anymore\n"
+	message += "!disablenews: channel wont receive news anymore\n"
+	message += "!forwardalerts: forward messages from here to !enabled channels\n"
+	message += "!forwardnews: forward messages from here to !enabled channels\n"
+	message += "!noforwardalerts: stop forwarding messages from this group\n"
+	message += "!noforwardnews: stop forwarding messages from this group\n"
 
+  	alertBot.sendMessage(msg.chat.id, message)
+  }
+})
 
 // Forward Handling
 alertBot.on('message', (msg) => {
