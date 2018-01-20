@@ -93,6 +93,7 @@ petesBot.onText(/\!noforwardnews/, (msg, match) => {
 
 // Others
 petesBot.onText(/\!help/, (msg, match) => {
+	console.log(msg)
   if (msg.from.id == ownerId) {
   	message = "Commands:\n"
   	message += "!enablealerts: enable a channel to receive alerts\n"
