@@ -1,8 +1,8 @@
 const TelegramBot = require('node-telegram-bot-api');
 require('dotenv').config();
 
-var alertGroupId
-var newsGroupId
+var alertGroupId = process.env.TELEGRAM_ALERT_GROUP_ID
+var newsGroupId = process.env.TELEGRAM_INFORMATION_GROUP_ID
 
 // Create a bot that uses 'polling' to fetch new updates
 const alertBot = new TelegramBot(process.env.TELEGRAM_INFORMATION_TOKEN, {polling: true});
