@@ -19,6 +19,6 @@
   "homepage": "https://github.com/carlosero/teleforward#readme",
   "dependencies": {
     "node-telegram-bot-api": "^0.30.0",
-    "pg": "^7.4.1"
+    "redis": "^2.8.0"
   }
 }
