@@ -1,0 +1,22 @@
+{
+  "name": "teleforward",
+  "version": "1.0.0",
+  "description": "Forwards messages in telegram from one group to the other",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carlosero/teleforward.git"
+  },
+  "author": "Carlos Rodriguez (ecarlos.rodriguez@gmail.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/carlosero/teleforward/issues"
+  },
+  "homepage": "https://github.com/carlosero/teleforward#readme",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.30.0"
+  }
+}
