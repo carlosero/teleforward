@@ -63,26 +63,38 @@ petesBot.onText(/\!disablenews/, (msg, match) => {
 // Forwarders
 petesBot.onText(/\!forwardalerts/, (msg, match) => {
   if (msg.from.id == ownerId) {
-  	addRedisId('forwardalerts', msg.chat.id)
-  	petesBot.sendMessage(msg.chat.id, 'Done.')
+  	chat = msg.text.split(' ')[1]
+  	petesBot.getChat(chat).then((res)=>{
+	  	addRedisId('forwardalerts', res.id)
+	  	petesBot.sendMessage(msg.chat.id, 'Done.')
+  	}).catch((e) => { petesBot.sendMessage(msg.chat.id, 'Not found')})
   }
 });
 petesBot.onText(/\!forwardnews/, (msg, match) => {
   if (msg.from.id == ownerId) {
-  	addRedisId('forwardnews', msg.chat.id)
-  	petesBot.sendMessage(msg.chat.id, 'Done.')
+  	chat = msg.text.split(' ')[1]
+  	petesBot.getChat(chat).then((res)=>{
+	  	addRedisId('forwardnews', res.id)
+	  	petesBot.sendMessage(msg.chat.id, 'Done.')
+  	}).catch((e) => { petesBot.sendMessage(msg.chat.id, 'Not found')})
   }
 });
 petesBot.onText(/\!noforwardalerts/, (msg, match) => {
   if (msg.from.id == ownerId) {
-  	removeRedisId('forwardalerts', msg.chat.id)
-  	petesBot.sendMessage(msg.chat.id, 'Done.')
+  	chat = msg.text.split(' ')[1]
+  	petesBot.getChat(chat).then((res)=>{
+	  	removeRedisId('forwardalerts', res.id)
+	  	petesBot.sendMessage(msg.chat.id, 'Done.')
+  	}).catch((e) => { petesBot.sendMessage(msg.chat.id, 'Not found')})
   }
 });
 petesBot.onText(/\!noforwardnews/, (msg, match) => {
   if (msg.from.id == ownerId) {
-  	removeRedisId('forwardnews', msg.chat.id)
-  	petesBot.sendMessage(msg.chat.id, 'Done.')
+  	chat = msg.text.split(' ')[1]
+  	petesBot.getChat(chat).then((res)=>{
+	  	removeRedisId('forwardnews', res.id)
+	  	petesBot.sendMessage(msg.chat.id, 'Done.')
+  	}).catch((e) => { petesBot.sendMessage(msg.chat.id, 'Not found')})
   }
 });
 // Others
