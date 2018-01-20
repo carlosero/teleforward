@@ -29,6 +29,35 @@ function removeRedisId(group, id) {
 }
 function parseIfExists(x) { return x ? x.split(',').map((e) => parseInt(e)) : []}
 
+function handleAdd(name, msg, match) {
+  	if (msg.from.id == ownerId) {
+	  	chat = msg.text.split(' ')[1]
+	  	if (chat) {
+		  	petesBot.getChat(chat).then((res)=>{
+			  	addRedisId(name, res.id)
+			  	petesBot.sendMessage(msg.chat.id, 'Done.')
+		  	}).catch((e) => { petesBot.sendMessage(msg.chat.id, 'Not found')})
+	  	} else {
+		  	addRedisId(name, msg.chat.id)
+		  	petesBot.sendMessage(msg.chat.id, 'Done.')
+	  	}
+  	}
+}
+function handleRemove(name, msg, match) {
+  	if (msg.from.id == ownerId) {
+	  	chat = msg.text.split(' ')[1]
+	  	if (chat) {
+		  	petesBot.getChat(chat).then((res)=>{
+			  	addRedisId(name, res.id)
+			  	petesBot.sendMessage(msg.chat.id, 'Done.')
+		  	}).catch((e) => { petesBot.sendMessage(msg.chat.id, 'Not found')})
+	  	} else {
+		  	addRedisId(name, msg.chat.id)
+		  	petesBot.sendMessage(msg.chat.id, 'Done.')
+	  	}
+  	}
+}
+
 client.get('alerts', (err,c) => { groupIds['alerts'] = parseIfExists(c) })
 client.get('news', (err,c) => { groupIds['news'] = parseIfExists(c) })
 client.get('forwardalerts', (err,c) => { groupIds['forwardalerts'] = parseIfExists(c) })
@@ -36,67 +65,32 @@ client.get('forwardnews', (err,c) => { groupIds['forwardnews'] = parseIfExists(c
 
 // Receivers
 petesBot.onText(/\!enablealerts/, (msg, match) => {
-  if (msg.from.id == ownerId) {
-  	addRedisId('alerts', msg.chat.id)
-  	petesBot.sendMessage(msg.chat.id, 'Done.')
-  }
+    handleAdd('alerts', msg, match)
 });
 petesBot.onText(/\!enablenews/, (msg, match) => {
-  if (msg.from.id == ownerId) {
-  	addRedisId('news', msg.chat.id)
-  	petesBot.sendMessage(msg.chat.id, 'Done.')
-  }
+    handleAdd('news', msg, match)
 });
 petesBot.onText(/\!disablealerts/, (msg, match) => {
-  if (msg.from.id == ownerId) {
-  	removeRedisId('alerts', msg.chat.id)
-  	petesBot.sendMessage(msg.chat.id, 'Done.')
-  }
+    handleRemove('alerts', msg, match)
 });
 petesBot.onText(/\!disablenews/, (msg, match) => {
-  if (msg.from.id == ownerId) {
-  	removeRedisId('news', msg.chat.id)
-  	petesBot.sendMessage(msg.chat.id, 'Done.')
-  }
+    handleRemove('news', msg, match)
 });
 
 // Forwarders
 petesBot.onText(/\!forwardalerts/, (msg, match) => {
-  if (msg.from.id == ownerId) {
-  	chat = msg.text.split(' ')[1]
-  	petesBot.getChat(chat).then((res)=>{
-	  	addRedisId('forwardalerts', res.id)
-	  	petesBot.sendMessage(msg.chat.id, 'Done.')
-  	}).catch((e) => { petesBot.sendMessage(msg.chat.id, 'Not found')})
-  }
+    handleAdd('forwardalerts', msg, match)
 });
 petesBot.onText(/\!forwardnews/, (msg, match) => {
-  if (msg.from.id == ownerId) {
-  	chat = msg.text.split(' ')[1]
-  	petesBot.getChat(chat).then((res)=>{
-	  	addRedisId('forwardnews', res.id)
-	  	petesBot.sendMessage(msg.chat.id, 'Done.')
-  	}).catch((e) => { petesBot.sendMessage(msg.chat.id, 'Not found')})
-  }
+    handleAdd('forwardnews', msg, match)
 });
 petesBot.onText(/\!noforwardalerts/, (msg, match) => {
-  if (msg.from.id == ownerId) {
-  	chat = msg.text.split(' ')[1]
-  	petesBot.getChat(chat).then((res)=>{
-	  	removeRedisId('forwardalerts', res.id)
-	  	petesBot.sendMessage(msg.chat.id, 'Done.')
-  	}).catch((e) => { petesBot.sendMessage(msg.chat.id, 'Not found')})
-  }
+    handleRemove('forwardalerts', msg, match)
 });
 petesBot.onText(/\!noforwardnews/, (msg, match) => {
-  if (msg.from.id == ownerId) {
-  	chat = msg.text.split(' ')[1]
-  	petesBot.getChat(chat).then((res)=>{
-	  	removeRedisId('forwardnews', res.id)
-	  	petesBot.sendMessage(msg.chat.id, 'Done.')
-  	}).catch((e) => { petesBot.sendMessage(msg.chat.id, 'Not found')})
-  }
+    handleRemove('forwardnews', msg, match)
 });
+
 // Others
 petesBot.onText(/\!help/, (msg, match) => {
   if (msg.from.id == ownerId) {
@@ -122,11 +116,6 @@ petesBot.on('message', (msg) => {
   				petesBot.forwardMessage(id, msg.chat.id, msg.message_id)
 			})
 		}
-	}
-});
-
-petesBot.on('message', (msg) => {
-	if (msg.chat.id && msg.message_id) {
 		if (groupIds['forwardnews'].indexOf(msg.chat.id) != -1) {
 			groupIds['news'].forEach((id) => {
   				petesBot.forwardMessage(id, msg.chat.id, msg.message_id)
